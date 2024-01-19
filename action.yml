@@ -1,0 +1,216 @@
+name: upgrade
+inputs:
+  application:
+    required: true
+  repository:
+    required: false
+  branch:
+     required: true
+  test:
+    required: false
+  validate:
+    required: false
+  upgrade:
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: 'xmlFlow/github-actions'
+
+    - name: Install postgres server
+      if: ${{matrix.database == 'pgsql'}}
+      run: |
+        sudo apt install postgresql-14 postgresql-contrib
+        sudo dpkg-reconfigure locales
+        sudo sed -i -E 's\peer|scram-sha-256\trust\g' /etc/postgresql/14/main/pg_hba.conf
+      shell: bash
+
+    - name: Install mysql server
+      if: ${{matrix.database == 'mysql'}}
+      run: |
+        sudo apt install -q -y mysql-server mysql-client
+        sudo service mysql start
+        sudo mysqladmin -u root -p'root' password ''
+      shell: bash
+
+    - name: Install mariadb server
+      if: ${{matrix.database == 'mariadb'}}
+      uses: ankane/setup-mariadb@v1
+      with:
+        mariadb-version: "10.11"
+    
+    - name: Install php environment
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{matrix.php-version}}
+        extensions: bcmath, bz2, curl, gd, intl, mbstring, mysql,mysqlnd, mysqli, opcache, pdo_mysql, pgsql, json,soap, xml, zip
+        coverage: xdebug
+      env:
+        update: true
+    
+    - name: Install  application
+      run: |
+        if [ -z ${{inputs.application}} ]  && [ -z ${{inputs.repository}} ]
+        then
+          git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{inputs.repository}}/${{inputs.application}} ~/${{inputs.application}} --depth 1
+#          echo ":bulb: Using https://github.com/${{inputs.repository}}/${{inputs.application}} " >> $GITHUB_STEP_SUMMARY
+        else
+          git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 1
+#         echo ":bulb: https://github.com/${{ github.repository}} " >> $GITHUB_STEP_SUMMARY
+        fi
+
+      shell: bash
+    - name: Install  Submodules
+      run: |
+        cd ~/${{inputs.application}}
+        git submodule update --init --recursive
+      shell: bash
+
+    - name : Checkout current pkp-lib
+      if: ${{ github.event.repository.name =='pkp-lib'}}
+      run:  |
+        cd ~/${{inputs.application}}/lib/pkp
+        git remote add feature https://github.com/${{ github.repository}}
+        git fetch feature ${{github.ref_name}}
+        git checkout feature/${{github.ref_name}}
+        echo ":heavy_check_mark: Checkout current pkp-lib" >> $GITHUB_STEP_SUMMARY
+      shell: bash
+
+    - name: Install  dependencies
+      run: |
+        cd ~/${{inputs.application}}
+        ${{ github.workspace }}/.github/actions/install-dependencies.sh
+      shell: bash
+
+    - name: Create additional directories
+      run: mkdir -p ~/bin
+      shell: bash
+
+    - name: Install validation tools
+      if: ${{ inputs.validate == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        ${{ github.workspace }}/.github/actions/install-validation-tools.sh
+      shell: bash
+
+    - name: Run XML validation
+      if: ${{ inputs.validate == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        ./lib/pkp/tools/travis/validate-xml.sh
+      shell: bash
+
+    - name: Run Javascript/JSON validation
+      if: ${{ inputs.validate == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        ./lib/pkp/tools/buildjs.sh -n
+        ./lib/pkp/tools/travis/validate-json.sh
+      shell: bash
+
+    - name: Run linting
+      if: ${{ inputs.validate == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        npm run lint
+      shell: bash
+
+    - name: Run Documentation validation
+      if: ${{ inputs.validate == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        ${{ github.workspace }}/.github/actions/run-document-validation.sh
+      shell: bash
+
+    - name:  Run  HTTP Server
+      if: ${{ inputs.test == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+         ${{ github.workspace }}/.github/actions/run-http-server.sh
+      shell: bash
+
+    - name: Prepare test environment
+      run: |
+        cd ~/${{inputs.application}}
+        ./lib/pkp/tools/travis/prepare-tests.sh
+      shell: bash
+      env:
+        TEST: ${{matrix.database}}
+        DBTYPE: ${{matrix.database == 'pgsql' && 'PostgreSQL' || 'MySQLi'}}
+        APPLICATION: '${{inputs.application}}'
+
+    - name: Run  integration tests
+      if: ${{ inputs.test == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        ${{ github.workspace }}/.github/actions/run-integration-tests.sh
+        echo ":heavy_check_mark: run integration tests" >> $GITHUB_STEP_SUMMARY
+      shell: bash
+      env:
+        BASEURL: http://localhost
+        CYPRESS_BASE_URL: http://127.0.0.1:8000
+        CYPRESS_DBTYPE: ${{matrix.database=='pgsql' && 'PostgreSQL' || 'MySQLi'}}
+        CYPRESS_DBNAME: ${{inputs.application}}-ci
+        CYPRESS_DBUSERNAME: ${{inputs.application}}-ci
+        CYPRESS_DBPASSWORD: ${{inputs.application}}-ci
+        CYPRESS_DBHOST: 127.0.0.1
+        CYPRESS_FILESDIR: files
+
+    - name: Run unit tests
+      if: ${{ inputs.test == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        ./lib/pkp/tools/travis/dump-database.sh
+        ./lib/pkp/tools/runAllTests.sh -CcPpdR
+        echo ":heavy_check_mark: Run unit tests" >> $GITHUB_STEP_SUMMARY
+      shell: bash
+      env:
+        TEST: ${{matrix.database}}
+        DBTYPE: ${{matrix.database == 'pgsql' && 'PostgreSQL' || 'MySQLi'}}
+        DATABASEDUMP: database.sql.gz
+        FILESDUMP: files.tar.gz
+        DBHOST: 127.0.0.1
+        DBNAME: ${{inputs.application}}-ci
+        DBUSERNAME: ${{inputs.application}}-ci
+        DBPASSWORD: ${{inputs.application}}-ci
+
+
+    - name: Download datasets
+      if: ${{ inputs.upgrade == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        git clone https://github.com/pkp/datasets --depth 1
+      shell: bash
+
+    - name: Run upgrade tests
+      if: ${{ inputs.upgrade == 'true'}}
+      run: |
+        cd ~/${{inputs.application}}
+        DATASET_BRANCHES=("stable-3_4_0" "stable-3_3_0" "stable-3_2_1" "stable-3_2_0")
+        for DATASET_BRANCH in "${DATASET_BRANCHES[@]}"
+        do
+          ${{ github.workspace }}/.github/actions/prepare-test-environment.sh
+          ${{ github.workspace }}/.github/actions/upgrade-pkp-application.sh
+          echo ":heavy_check_mark: Update from ${DATASET_BRANCH} " >> $GITHUB_STEP_SUMMARY
+        done
+      env:
+        TEST: ${{matrix.database}}
+        DBTYPE: ${{matrix.database == 'pgsql' && 'PostgreSQL' || 'MySQLi'}}
+        DBHOST: 127.0.0.1
+        DBNAME: ${{inputs.application}}-ci
+        DBUSERNAME: ${{inputs.application}}-ci
+        DBPASSWORD: ${{inputs.application}}-ci
+        APPLICATION: ${{inputs.application}}
+        DATASET_BRANCH: stable-3_4_0
+      shell: bash
+
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: Create Cypess screenshots as artifacts
+        path: ~/${{ inputs.application}}/cypress/screenshots
+        if-no-files-found: ignore
