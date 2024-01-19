@@ -57,8 +57,10 @@ runs:
         if [[ -z ${{inputs.application}} ]]  && [[ -z ${{inputs.repository}} ]]
         then
           git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{inputs.repository}}/${{inputs.application}} ~/${{inputs.application}} --depth 1
+          echo ":bulb: Using https://github.com/${{inputs.repository}}/${{inputs.application}} " >> $GITHUB_STEP_SUMMARY
         else
           git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 1
+          echo ":bulb: https://github.com/${{ github.repository}} " >> $GITHUB_STEP_SUMMARY
         fi
 
       shell: bash
