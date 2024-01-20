@@ -63,7 +63,7 @@ runs:
       shell: bash
 
     - name: Install PKP application
-      if: ${{github.events.inputs.repository == ''}} && ${{github.events.inputs.application == ''}} && ${{github.events.inputs.branch == ''}}
+      if: ${{inputs.repository == ''}} && ${{inputs.application == ''}} && ${{inputs.branch == ''}}
       run: |
           echo "i am app"
           git clone -b ${{ github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 1
