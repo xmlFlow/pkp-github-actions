@@ -1,7 +1,7 @@
 on: [push, pull_request]
-name: main
+name: test
 jobs:
-  main:
+  test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
