@@ -1,5 +1,5 @@
 on: [push, pull_request]
-name: main
+name: upgrade
 jobs:
   upgrade:
     runs-on: ubuntu-latest
