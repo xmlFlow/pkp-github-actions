@@ -1,7 +1,7 @@
 on: [push, pull_request]
-name: upgrade
+name: main
 jobs:
-  upgrade:
+  main:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -13,7 +13,7 @@ jobs:
         #database: ['pgsql','mysql']
         #php-version: [ '8.1' ,'8.2']
 
-    name: upgrade
+    name: test
     steps:
       - uses: xmlFlow/github-actions@v1
         with:
