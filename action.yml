@@ -18,9 +18,11 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "${{toJson(github)}}"
+    - run: | 
+        echo "${{toJson(inputs)}}"
+        echo "${{toJson(github)}}"
       shell: bash
-      
+
     - uses: actions/checkout@v4
       with:
         repository: 'xmlFlow/github-actions'
@@ -65,7 +67,7 @@ runs:
       shell: bash
 
     - name: Install  PKP application for  plugins
-      if: ${{github.events.inputs.repository != ''}} && ${{github.events.inputs.application != ''}} && ${{github.events.inputs.branch != ''}}
+      if: ${{inputs.repository != ''}} && ${{inputs.application != ''}} && ${{.inputs.branch != ''}}
       run: |
         echo "i am plugin"
         git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{inputs.repository}}/${{inputs.application}} ~/${{inputs.application}} --depth 1
