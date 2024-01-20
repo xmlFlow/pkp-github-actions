@@ -56,6 +56,7 @@ runs:
     - name: Install  PKP application for  plugins
       if: ${{github.events.inputs.repository != ''}} && ${{github.events.inputs.application != ''}} && ${{github.events.inputs.branch != ''}}
       run: |
+        echo "i am plugin"
         git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{inputs.repository}}/${{inputs.application}} ~/${{inputs.application}} --depth 1
         echo ":bulb: Using https://github.com/${{inputs.repository}}/${{inputs.application}} " >> $GITHUB_STEP_SUMMARY
 
@@ -64,16 +65,18 @@ runs:
     - name: Install PKP application
       if: ${{github.events.inputs.repository == ''}} && ${{github.events.inputs.application == ''}} && ${{github.events.inputs.branch == ''}}
       run: |
+          echo "i am app"
           git clone -b ${{ github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 1
           echo ":bulb: https://github.com/${{ github.repository}} " >> $GITHUB_STEP_SUMMARY
       shell: bash
+
     - name: Install  Submodules
       run: |
         cd ~/${{inputs.application}}
         git submodule update --init --recursive
       shell: bash
 
-    - name : Checkout current pkp-lib
+    - name : Checkout for  pkp-lib
       if: ${{ github.event.repository.name =='pkp-lib'}}
       run:  |
         cd ~/${{inputs.application}}/lib/pkp

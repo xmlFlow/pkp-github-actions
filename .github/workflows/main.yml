@@ -1,7 +1,7 @@
 on: [push, pull_request]
 name: upgrade
 jobs:
-  upgrade:
+  main:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
