@@ -19,6 +19,7 @@ runs:
   using: "composite"
   steps:
     - run: echo "${{toJson(github)}}"
+      shell: bash
       
     - uses: actions/checkout@v4
       with:
