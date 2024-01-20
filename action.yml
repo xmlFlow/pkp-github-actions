@@ -62,7 +62,7 @@ runs:
       shell: bash
 
     - name: Install PKP application
-      if: ${{github.events.inputs.repository == ''}} && ${{github.events.inputs.application == ''}} && ${{github.events.inputs.branch == ''}
+      if: ${{github.events.inputs.repository == ''}} && ${{github.events.inputs.application == ''}} && ${{github.events.inputs.branch == ''}}
       run: |
           git clone -b ${{ github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 1
           echo ":bulb: https://github.com/${{ github.repository}} " >> $GITHUB_STEP_SUMMARY
