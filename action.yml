@@ -18,9 +18,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: | 
-        echo "${{toJson(inputs)}}"
-#        echo "${{toJson(github)}}"
+    - run: echo "${{toJson(github)}}"
       shell: bash
 
     - uses: actions/checkout@v4

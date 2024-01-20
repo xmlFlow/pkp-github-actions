@@ -13,7 +13,6 @@ jobs:
         #database: ['pgsql','mysql']
         #php-version: [ '8.1' ,'8.2']
 
-    name: upgrade
     steps:
       - uses: xmlFlow/github-actions@v1
         with:
