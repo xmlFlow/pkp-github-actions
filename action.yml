@@ -53,7 +53,7 @@ runs:
       env:
         update: true
 
-    - name: Install  PKP application for  external applications
+    - name: Install  PKP application for  plugins
       if: ${{inputs.repository != ''}} || ${{inputs.application != ''}}
       run: |
         git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{inputs.repository}}/${{inputs.application}} ~/${{inputs.application}} --depth 1
@@ -62,6 +62,7 @@ runs:
       shell: bash
 
     - name: Install PKP application
+      if: ${{inputs.repository == ''}} || ${{inputs.application == ''}}
       run: |
           git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 1
           echo ":bulb: https://github.com/${{ github.repository}} " >> $GITHUB_STEP_SUMMARY
