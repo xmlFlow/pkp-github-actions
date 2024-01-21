@@ -20,8 +20,8 @@ runs:
   steps:
     - run: | 
         echo "${{toJson(inputs)}}"
-        echo "${{inputs.repository == ''}} && ${{inputs.application == ''}} && ${{inputs.branch == ''}}"
-        echo "${{inputs.repository != ''}} && ${{inputs.application != ''}} && ${{inputs.branch != ''}}"
+        echo "${{inputs.repository == '' && inputs.application == '' && inputs.branch == ''}}"
+        echo "${{inputs.repository != '' && inputs.application != '' && inputs.branch != ''}}"
       shell: bash
 
     - uses: actions/checkout@v4
