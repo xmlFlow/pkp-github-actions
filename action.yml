@@ -46,7 +46,7 @@ runs:
     
     - name: echo
       run: |  
-        echo ${{inputs.application || github.event.repository.name }}
+        echo ${toJson(github.event)}}
       shell: bash
 
     - name: Install php environment
@@ -85,7 +85,7 @@ runs:
         git remote add feature https://github.com/${{ github.repository}}
         git fetch feature ${{github.ref_name}}
         git checkout feature/${{github.ref_name}}
-        echo ":rocket: Checkout current pkp-lib" >> $GITHUB_STEP_SUMMARY
+        echo ":bulb: Checkout current pkp-lib" >> $GITHUB_STEP_SUMMARY
       shell: bash
 
     - name: Install  dependencies
