@@ -65,21 +65,18 @@ runs:
       run: |
         git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{inputs.repository}}/${{inputs.application}} ~/${{inputs.application}} --depth 1
         echo ":bulb: Using https://github.com/${{inputs.repository}}/${{inputs.application}} " >> $GITHUB_STEP_SUMMARY
-
       shell: bash
-
-
 
     - name: Install  Submodules
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name }}
         git submodule update --init --recursive
       shell: bash
 
     - name : Checkout for  pkp-lib
       if: ${{ github.event.repository.name =='pkp-lib'}}
       run:  |
-        cd ~/${{inputs.application}}/lib/pkp
+        cd ~/${{inputs.application || github.event.repository.name }}/lib/pkp
         git remote add feature https://github.com/${{ github.repository}}
         git fetch feature ${{github.ref_name}}
         git checkout feature/${{github.ref_name}}
