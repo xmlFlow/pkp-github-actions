@@ -108,7 +108,7 @@ runs:
       shell: bash
 
     - name: Run Javascript/JSON validation
-      if: ${{ inputs.validate == 'true'}}
+      if: ${{ inputs.json-validation == 'true'}}
       run: |
         cd ~/${{inputs.application}}
         ./lib/pkp/tools/buildjs.sh -n
