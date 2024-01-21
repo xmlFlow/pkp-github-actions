@@ -18,7 +18,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "${{toJson(inputs)}}"
+    - run: | 
+        echo "${{toJson(inputs)}}"
+        echo "${{inputs.test ==''}}"
+        echo "${{inputs.test !=''}}"
+        echo "${{inputs.test =='' $$ inputs.branch}}"
+
       shell: bash
 
     - uses: actions/checkout@v4
