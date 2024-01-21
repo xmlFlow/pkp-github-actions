@@ -85,7 +85,7 @@ runs:
 
     - name: Install  dependencies
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name }}
         ${{ github.workspace }}/.github/actions/install-dependencies.sh
       shell: bash
 
@@ -96,21 +96,21 @@ runs:
     - name: Install validation tools
       if: ${{ inputs.validate == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name }}
         ${{ github.workspace }}/.github/actions/install-validation-tools.sh
       shell: bash
 
     - name: Run XML validation
       if: ${{ inputs.validate == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name }}
         ./lib/pkp/tools/travis/validate-xml.sh
       shell: bash
 
     - name: Run Javascript/JSON validation
       if: ${{ inputs.json-validation == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name}} 
         ./lib/pkp/tools/buildjs.sh -n
         ./lib/pkp/tools/travis/validate-json.sh
       shell: bash
@@ -118,27 +118,27 @@ runs:
     - name: Run linting
       if: ${{ inputs.json-validate == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name }}
         npm run lint
       shell: bash
 
     - name: Run Documentation validation
       if: ${{ inputs.validate == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name }}
         ${{ github.workspace }}/.github/actions/run-document-validation.sh
       shell: bash
 
     - name:  Run  HTTP Server
       if: ${{ inputs.test == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name}} 
          ${{ github.workspace }}/.github/actions/run-http-server.sh
       shell: bash
 
     - name: Prepare test environment
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name}} 
         ./lib/pkp/tools/travis/prepare-tests.sh
       shell: bash
       env:
@@ -149,7 +149,7 @@ runs:
     - name: Run  integration tests
       if: ${{ inputs.test == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name}} 
         ${{ github.workspace }}/.github/actions/run-integration-tests.sh
         echo ":rocket: run integration tests" >> $GITHUB_STEP_SUMMARY
       shell: bash
@@ -166,7 +166,7 @@ runs:
     - name: Run unit tests
       if: ${{ inputs.test == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name}} 
         ./lib/pkp/tools/travis/dump-database.sh
         ./lib/pkp/tools/runAllTests.sh -CcPpdR
         echo ":rocket: Run unit tests" >> $GITHUB_STEP_SUMMARY
@@ -185,14 +185,14 @@ runs:
     - name: Download datasets
       if: ${{ inputs.upgrade == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name}} 
         git clone https://github.com/pkp/datasets --depth 1
       shell: bash
 
     - name: Run upgrade tests
       if: ${{ inputs.upgrade == 'true'}}
       run: |
-        cd ~/${{inputs.application}}
+        cd ~/${{inputs.application || github.event.repository.name}} 
         DATASET_BRANCHES=("stable-3_4_0" "stable-3_3_0" "stable-3_2_1" "stable-3_2_0")
         for DATASET_BRANCH in "${DATASET_BRANCHES[@]}"
         do
