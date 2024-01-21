@@ -62,7 +62,7 @@ runs:
       shell: bash
 
     - name: Install  PKP application for  plugins
-      if: ${{inputs.repository != '' inputs.application != '' inputs.branch != ''}}
+      if: ${{inputs.repository != '' && inputs.application != '' && inputs.branch != ''}}
       run: |
         echo "i am plugin"
         git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{inputs.repository}}/${{inputs.application}} ~/${{inputs.application}} --depth 1
