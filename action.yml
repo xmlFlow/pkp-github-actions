@@ -44,6 +44,11 @@ runs:
       with:
         mariadb-version: "10.11"
     
+    - name: echo
+      run: |  
+        echo ${{inputs.application || github.event.repository.name }}
+      shell: bash
+
     - name: Install php environment
       uses: shivammathur/setup-php@v2
       with:
