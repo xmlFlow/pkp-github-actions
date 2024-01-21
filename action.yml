@@ -56,7 +56,6 @@ runs:
     - name: Install PKP application
       if: ${{inputs.repository == '' && inputs.application == '' && inputs.branch == ''}}
       run: |
-        echo "i am app"
         git clone -b ${{ github.head_ref || github.ref_name }} https://github.com/${{ github.repository}} ~/${{ github.event.repository.name }} --depth 1
         echo ":bulb: https://github.com/${{ github.repository}} " >> $GITHUB_STEP_SUMMARY
       shell: bash
@@ -64,7 +63,6 @@ runs:
     - name: Install  PKP application for  plugins
       if: ${{inputs.repository != '' && inputs.application != '' && inputs.branch != ''}}
       run: |
-        echo "i am plugin"
         git clone -b ${{inputs.branch || github.head_ref || github.ref_name }} https://github.com/${{inputs.repository}}/${{inputs.application}} ~/${{inputs.application}} --depth 1
         echo ":bulb: Using https://github.com/${{inputs.repository}}/${{inputs.application}} " >> $GITHUB_STEP_SUMMARY
 
@@ -85,7 +83,7 @@ runs:
         git remote add feature https://github.com/${{ github.repository}}
         git fetch feature ${{github.ref_name}}
         git checkout feature/${{github.ref_name}}
-        echo ":heavy_check_mark: Checkout current pkp-lib" >> $GITHUB_STEP_SUMMARY
+        echo ":rocket: Checkout current pkp-lib" >> $GITHUB_STEP_SUMMARY
       shell: bash
 
     - name: Install  dependencies
@@ -156,7 +154,7 @@ runs:
       run: |
         cd ~/${{inputs.application}}
         ${{ github.workspace }}/.github/actions/run-integration-tests.sh
-        echo ":heavy_check_mark: run integration tests" >> $GITHUB_STEP_SUMMARY
+        echo ":rocket: run integration tests" >> $GITHUB_STEP_SUMMARY
       shell: bash
       env:
         BASEURL: http://localhost
@@ -174,7 +172,7 @@ runs:
         cd ~/${{inputs.application}}
         ./lib/pkp/tools/travis/dump-database.sh
         ./lib/pkp/tools/runAllTests.sh -CcPpdR
-        echo ":heavy_check_mark: Run unit tests" >> $GITHUB_STEP_SUMMARY
+        echo ":rocket: Run unit tests" >> $GITHUB_STEP_SUMMARY
       shell: bash
       env:
         TEST: ${{matrix.database}}
@@ -203,7 +201,7 @@ runs:
         do
           ${{ github.workspace }}/.github/actions/prepare-test-environment.sh
           ${{ github.workspace }}/.github/actions/upgrade-pkp-application.sh
-          echo ":heavy_check_mark: Update from ${DATASET_BRANCH} " >> $GITHUB_STEP_SUMMARY
+          echo ":rocket: Update from ${DATASET_BRANCH} " >> $GITHUB_STEP_SUMMARY
         done
       env:
         TEST: ${{matrix.database}}
