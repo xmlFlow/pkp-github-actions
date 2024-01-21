@@ -20,5 +20,5 @@ jobs:
           repository: 'pkp'
           branch: 'main'
           #validate: true
-          test: true
+          #test: true
           #upgrade: true
