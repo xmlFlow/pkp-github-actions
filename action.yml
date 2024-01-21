@@ -116,7 +116,7 @@ runs:
       shell: bash
 
     - name: Run linting
-      if: ${{ inputs.validate == 'true'}}
+      if: ${{ inputs.json-validate == 'true'}}
       run: |
         cd ~/${{inputs.application}}
         npm run lint
