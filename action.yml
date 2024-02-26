@@ -11,7 +11,7 @@ inputs:
     default: true
     required: false
   validate:
-    default: false
+    default: true
     required: false
   upgrade:
     default: true
@@ -29,7 +29,7 @@ runs:
   steps:
     - uses: actions/checkout@v4
       with:
-        repository: 'xmlFlow/pkp-github-actions'
+        repository: 'pkp/pkp-github-actions'
         path: pkp-github-actions
         ref: v1
 
@@ -263,10 +263,7 @@ runs:
           echo " | OS  |PHP| DB|  Node |  "
           echo "| ---| --- | ---- | --- |"
           echo "|  :penguin: ${{runner.os}} ${{runner.arch}}   $( lsb_release -i | cut -c 17-) $( lsb_release -c | cut -c 11-) $( lsb_release -r | cut -c 10-)   | ${{matrix.php-version}} | ${{matrix.database}} |  ${{inputs.node_version}} |"
-          echo "#### Last 2 commits"
-          echo "| Date| Comment | Commit| "
-          echo "| ---| --- | ---- |"
-          echo "$(git log --pretty=format:"|%as |%s | https://github.com/xmlFlow/${APPLICATION}/commit/%H |" -2) |"
+        
       
       
         } >> $GITHUB_STEP_SUMMARY
