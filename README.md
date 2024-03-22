@@ -141,54 +141,54 @@ Only additional steps from the app configuration are mentioned, for the missing 
 ### main
 Stage|PHP |Other Details | |
 |---|----|----| ---|
+| validation | 8.1.0   | TEST=validation       |
 test|8.1.0| TEST=pgsql| SAVE_BUILD=true
 test|8.1.0| TEST=mariadb| SAVE_BUILD=true
 test|8.1.0| TEST=mysql| SAVE_BUILD=true
-test|8.2.0| TEST=mysql| 
+test|8.2.0| TEST=mysql|
 test|8.2.0| TEST=pgsql|
 upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_4_0
 upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_3_0
 upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_2_1
 upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_2_0
-upgrade|8.1.0| TEST=pgsql | DATASET_BRANCH=stable-3_4_0
-upgrade|8.1.0| TEST=pgsql | DATASET_BRANCH=stable-3_3_0
-upgrade|8.1.0| TEST=pgsql | DATASET_BRANCH=stable-3_2_1
-upgrade|8.1.0| TEST=pgsql | DATASET_BRANCH=stable-3_2_0
 
 
 ### 3.4
-| test    | 8.0   | TEST=pgsql            | SAVE_BUILD=true      |
-| test    | 8.0   | TEST=mariadb          | SAVE_BUILD=true      |
-| test    | 8.1.0 | TEST=pgsql            |                      |
-| test    | 8.1.0 | TEST=mysql            | SAVE_BUILD=true      |
-| test    | 8.2.0 | TEST=mysql            |                      |
-| test    | 8.2.0 | TEST=pgsql            |                      |
-| upgrade | 8.0   | TEST=pgsql            | DATASET_BRANCH=3.1.0|
-| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=3.1.1-2|
-| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=3.1.2|
-| upgrade | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_2_0|
-| upgrade | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_2_1|
-| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_2_1|
-| upgrade | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_3_0|
-| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
-| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
-| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
+Stage      | PHP   |Other Details | |
+|------------|-------|----| ---|
+| validation | 8.0   | TEST=validation       |
+| test       | 8.0   | TEST=pgsql            | SAVE_BUILD=true      |
+| test       | 8.0   | TEST=mariadb          | SAVE_BUILD=true      |
+| test       | 8.1.0 | TEST=pgsql            |                      |
+| test       | 8.1.0 | TEST=mysql            | SAVE_BUILD=true      |
+| test       | 8.2.0 | TEST=mysql            |                      |
+| test       | 8.2.0 | TEST=pgsql            |                      |
+| upgrade    | 8.0   | TEST=pgsql            | DATASET_BRANCH=3.1.0|
+| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=3.1.1-2|
+| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=3.1.2|
+| upgrade    | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_2_0|
+| upgrade    | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_2_1|
+| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_2_1|
+| upgrade    | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_3_0|
+| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
+| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
+| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
 
 
 ### 3.3
-| PHP   | Other Details         | Save            
-|-------|-----------------------|-----------------|
-| 7.3   | TEST=pgsql            |
-| 7.3   | TEST=mysql            |
-| 7.4   | TEST=pgsql            |
-| 7.4   | TEST=mysql            |
-| 8.0   | TEST=validation       |
-| 8.0   | TEST=pgsql | SAVE_BUILD=true |
-| 8.0   | TEST=mysql | SAVE_BUILD=true |
-| 8.1   | TEST=pgsql            |
-| 8.1   | TEST=mysql            |
-| 8.2.0 | TEST=mysql            |
-| 8.2.0 | TEST=pgsql            |
+| PHP   | Other Details   | Save            
+|-------|-----------------|-----------------|
+| 8.0   | TEST=validation |
+| 7.3   | TEST=pgsql      |
+| 7.3   | TEST=mysql      |
+| 7.4   | TEST=pgsql      |
+| 7.4   | TEST=mysql      |
+| 8.0   | TEST=pgsql      | SAVE_BUILD=true |
+| 8.0   | TEST=mysql      | SAVE_BUILD=true |
+| 8.1   | TEST=pgsql      |
+| 8.1   | TEST=mysql      |
+| 8.2.0 | TEST=mysql      |
+| 8.2.0 | TEST=pgsql      |
 
 
 
