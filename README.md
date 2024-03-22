@@ -135,37 +135,60 @@ Only additional steps from the app configuration are mentioned, for the missing 
 ## Next steps
 
 - remove additional variables
-- get rid of long variable combination e.g. ${{inputs.application || github.event.repository.name}}
+- get rid of long variable combination e.g. ${{inputs.application | github.event.repository.name}}
 - Find a github actions way to set the env variables better, in shell scripts we need them explicitly, creating duplication
+
+### main
+Stage|PHP |Other Details | |
+|---|----|----| ---|
+test|8.1.0| TEST=pgsql| SAVE_BUILD=true
+test|8.1.0| TEST=mariadb| SAVE_BUILD=true
+test|8.1.0| TEST=mysql| SAVE_BUILD=true
+test|8.2.0| TEST=mysql| 
+test|8.2.0| TEST=pgsql|
+upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_4_0
+upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_3_0
+upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_2_1
+upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_2_0
+upgrade|8.1.0| TEST=pgsql | DATASET_BRANCH=stable-3_4_0
+upgrade|8.1.0| TEST=pgsql | DATASET_BRANCH=stable-3_3_0
+upgrade|8.1.0| TEST=pgsql | DATASET_BRANCH=stable-3_2_1
+upgrade|8.1.0| TEST=pgsql | DATASET_BRANCH=stable-3_2_0
 
 
 ### 3.4
-| PHP Version | db                           |
-|-------------|------------------------------|
-| PHP: 8.0    | TEST=pgsql SAVE_BUILD=true   |
-| PHP: 8.1.0  | TEST=pgsql                   |
-| PHP: 8.0    | TEST=mariadb SAVE_BUILD=true |
-| PHP: 8.1.0  | TEST=mysql SAVE_BUILD=true   |
-| PHP: 8.2.0  | TEST=mysql                   |
-| PHP: 8.2.0  | TEST=pgsql                   |
-| PHP: 8.0    | TEST=mysql                   |
+| test    | 8.0   | TEST=pgsql            | SAVE_BUILD=true      |
+| test    | 8.0   | TEST=mariadb          | SAVE_BUILD=true      |
+| test    | 8.1.0 | TEST=pgsql            |                      |
+| test    | 8.1.0 | TEST=mysql            | SAVE_BUILD=true      |
+| test    | 8.2.0 | TEST=mysql            |                      |
+| test    | 8.2.0 | TEST=pgsql            |                      |
+| upgrade | 8.0   | TEST=pgsql            | DATASET_BRANCH=3.1.0|
+| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=3.1.1-2|
+| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=3.1.2|
+| upgrade | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_2_0|
+| upgrade | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_2_1|
+| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_2_1|
+| upgrade | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_3_0|
+| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
+| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
+| upgrade | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
 
 
 ### 3.3
-
-| PHP   | db                    |
-|-------|-----------------------|
-| 7.3   | pgsql                 |
-| 7.3   | mysql                 |
-| 7.4   | pgsql                 |
-| 7.4   | mysql                 |
-| 8.0   | validation            |
-| 8.0   | pgsql SAVE_BUILD=true |
-| 8.0   | mysql SAVE_BUILD=true |
-| 8.1   | pgsql                 |
-| 8.1   | mysql                 |
-| 8.2.0 | mysql                 |
-| 8.2.0 | pgsql                 |
+| PHP   | Other Details         | Save            
+|-------|-----------------------|-----------------|
+| 7.3   | TEST=pgsql            |
+| 7.3   | TEST=mysql            |
+| 7.4   | TEST=pgsql            |
+| 7.4   | TEST=mysql            |
+| 8.0   | TEST=validation       |
+| 8.0   | TEST=pgsql | SAVE_BUILD=true |
+| 8.0   | TEST=mysql | SAVE_BUILD=true |
+| 8.1   | TEST=pgsql            |
+| 8.1   | TEST=mysql            |
+| 8.2.0 | TEST=mysql            |
+| 8.2.0 | TEST=pgsql            |
 
 
 
