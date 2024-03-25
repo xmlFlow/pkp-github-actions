@@ -194,8 +194,9 @@ runs:
 
 
     - name: Dump database
+      if: ${{ inputs.dataset_branch != '' &&  github.event_name  == 'push' && matrix.SAVE_BUILD}}
       run: |
-        cd ~/${{inputs.application || github.event.repository.name && matrix.SAVE_BUILD }}
+        cd ~/${{inputs.application || github.event.repository.name }}
         ${{ github.workspace }}/pkp-github-actions/.github/actions/dump-database.sh
       shell: bash
       env:
