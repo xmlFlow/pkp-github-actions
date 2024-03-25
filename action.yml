@@ -8,13 +8,13 @@ inputs:
   branch:
      required: false
   test:
-    default: true
+    default: false
     required: false
   validate:
     default: false
     required: false
   upgrade:
-    default: true
+    default: false
     required: false
   upgrade_test:
     required: false
