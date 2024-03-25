@@ -138,58 +138,47 @@ Only additional steps from the app configuration are mentioned, for the missing 
 - get rid of long variable combination e.g. ${{inputs.application | github.event.repository.name}}
 - Find a github actions way to set the env variables better, in shell scripts we need them explicitly, creating duplication
 
-### main
-Stage|PHP |Other Details | |
-|---|----|----| ---|
-| validation | 8.1.0   | TEST=validation       |
-test|8.1.0| TEST=pgsql| SAVE_BUILD=true
-test|8.1.0| TEST=mariadb| SAVE_BUILD=true
-test|8.1.0| TEST=mysql| SAVE_BUILD=true
-test|8.2.0| TEST=mysql|
-test|8.2.0| TEST=pgsql|
-upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_4_0
-upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_3_0
-upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_2_1
-upgrade|8.1.0| TEST=mysql | DATASET_BRANCH=stable-3_2_0
-
-
-### 3.4
-Stage      | PHP   |Other Details | |
-|------------|-------|----| ---|
-| validation | 8.0   | TEST=validation       |
-| test       | 8.0   | TEST=pgsql            | SAVE_BUILD=true      |
-| test       | 8.0   | TEST=mariadb          | SAVE_BUILD=true      |
-| test       | 8.1.0 | TEST=pgsql            |                      |
-| test       | 8.1.0 | TEST=mysql            | SAVE_BUILD=true      |
-| test       | 8.2.0 | TEST=mysql            |                      |
-| test       | 8.2.0 | TEST=pgsql            |                      |
-| upgrade    | 8.0   | TEST=pgsql            | DATASET_BRANCH=3.1.0|
-| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=3.1.1-2|
-| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=3.1.2|
-| upgrade    | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_2_0|
-| upgrade    | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_2_1|
-| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_2_1|
-| upgrade    | 8.0   | TEST=pgsql            | DATASET_BRANCH=stable-3_3_0|
-| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
-| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
-| upgrade    | 8.0   | TEST=mysql            | DATASET_BRANCH=stable-3_3_0|
-
-
-### 3.3
-| PHP   | Other Details   | Save            
-|-------|-----------------|-----------------|
-| 8.0   | TEST=validation |
-| 7.3   | TEST=pgsql      |
-| 7.3   | TEST=mysql      |
-| 7.4   | TEST=pgsql      |
-| 7.4   | TEST=mysql      |
-| 8.0   | TEST=pgsql      | SAVE_BUILD=true |
-| 8.0   | TEST=mysql      | SAVE_BUILD=true |
-| 8.1   | TEST=pgsql      |
-| 8.1   | TEST=mysql      |
-| 8.2.0 | TEST=mysql      |
-| 8.2.0 | TEST=pgsql      |
-
+Branch|Test-Type| PHP     | Database | DATASET_BRANCH | SAVE_BUILD | Container |
+| -- | -- |---------|----------|----------------|------------|-----------|
+main|validation| 8.1     |          |                |            | 1         | 
+main|test| 8.1     | pgsql    |                | x          | 2         |
+main|test| 8.1     | mariadb  |                | x          | 3         
+main|test| 8.1     | mysql    |                | x          | 4         
+main|test| 8.2     | mysql    |                |            | 5         
+main|test| 8.2     | pgsql    |                |            | 6         |
+main|upgrade| 8.1     | mysql    | stable-3_4_0   |            | 4         
+main|upgrade| 8.1     | mysql    | stable-3_3_0   |            | 4         
+main|upgrade| 8.1     | pgsql    | stable-3_4_0   |            | 6         
+main|upgrade| 8.1     | pgsql    | stable-3_3_0   |            | 6         
+3.4|validation| 8       |          |                |            | 1         
+3.4|test| 8       | pgsql    |                | x          | 2         
+3.4|test| 8.1     | pgsql    |                |            | 3         
+3.4|test| 8       | mariadb  |                | x          | 4         
+3.4|test| 8.1     | mysql    |                | x          | 5         |       
+3.4|test| 8.2     | mysql    |                |            | 6         
+3.4|test| 8.2     | pgsql    |                |            | 7         
+3.4|test| | 8 mysql  |                |            | 8         
+3.4|upgrade| 8       | mysql    | 3.1.0          |            | 8         
+3.4|upgrade| 8       | mysql    | 3.1.1-2        |            | 8         
+3.4|upgrade| 8       | mysql    | 3.1.2          |            | 8         
+3.4|upgrade| 8       | mysql    | stable-3_2_0   |            | 8         
+3.4|upgrade| 8       | mysql    | stable-3_2_1   |            | 8         
+3.4|upgrade| 8       | mysql    | stable-3_3_0   |            | 8         
+3.4|upgrade| 8       | pgsqll   | 3.1.0          |            | 7         
+3.4|upgrade| 8       | pgsql    | stable-3_2_0   |            | 7         
+3.4|upgrade| 8       | pgsql    | stable-3_2_1   |            | 7         
+3.4|upgrade| 8       | pgsql    | stable-3_3_0   |            | 7         
+3.3|validation| 8       |          |                |            | 1         |
+3.3|test| 7.3     | pgsql    |                |            | 2         
+3.3|test| 7.3     | mysql    |                |            | 3         
+3.3|test| 7.4     | pgsql    |                |            | 4         
+3.3|test| 7.4     | mysql    |                |            | 5         
+3.3|test| 8       | pgsql    |                | x          | 6         
+3.3|test| 8       | mysql    |                | x          | 7         
+3.3|test| 8.1     | pgsql    |                |            | 8         
+3.3|test| 8.1     | mysql    |                |            | 9         |
+3.3|test| 8.2     | mysql    |                |            | 10        | 
+3.3|test| 8.2     | pgsql    |                | | 11        |
 
 
 ## Development Scenarios
