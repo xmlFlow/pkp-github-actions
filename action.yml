@@ -8,10 +8,7 @@ inputs:
   branch:
      required: false
   test:
-    default: false
-    required: false
-  validate:
-    default: false
+    default: true
     required: false
   upgrade:
     default: false
@@ -136,7 +133,7 @@ runs:
       shell: bash
 
     - name: Install validation tools
-      if: ${{ inputs.validate == 'true'}}
+      if: ${{ matrix.validate == 'true'}}
       run: |
         cd ~/${{inputs.application || github.event.repository.name }}
          ${{ github.workspace }}/pkp-github-actions/.github/actions/install-validation-tools.sh
@@ -144,7 +141,7 @@ runs:
 
 
     - name: Run XML validation
-      if: ${{ inputs.validate == 'true'}}
+      if: ${{ matrix.validate == 'true'}}
       id: validation
       run: |
         start_time=$(date -u +%s)
@@ -161,14 +158,14 @@ runs:
       shell: bash
 
     - name:  Run  HTTP Server
-      if: ${{ inputs.test == 'true'}}
+      if: ${{ matrix.test == 'true'}}
       run: |
         cd ~/${{inputs.application || github.event.repository.name }} 
         ${{ github.workspace }}/pkp-github-actions/.github/actions/run-http-server.sh
       shell: bash
 
     - name: Prepare test environment
-      if: ${{ inputs.test == 'true'}}
+      if: ${{ matrix.test == 'true'}}
       run: |
         cd ~/${{inputs.application || github.event.repository.name }} 
         ${{ github.workspace }}/pkp-github-actions/.github/actions/prepare-tests.sh
@@ -179,7 +176,7 @@ runs:
 
     - name: Run  data integration tests
       id: data-integration-tests
-      if: ${{ inputs.test == 'true'}}
+      if: ${{ matrix.test == 'true'}}
       run: |
         start_time=$(date -u +%s)
         echo "status=:red_circle:" >> $GITHUB_OUTPUT
@@ -198,7 +195,7 @@ runs:
 
     - name: Dump database
       run: |
-        cd ~/${{inputs.application || github.event.repository.name }}
+        cd ~/${{inputs.application || github.event.repository.name && matrix.SAVE_BUILD }}
         ${{ github.workspace }}/pkp-github-actions/.github/actions/dump-database.sh
       shell: bash
       env:
@@ -206,7 +203,7 @@ runs:
         DBTYPE: ${{matrix.database=='pgsql' && 'PostgreSQL' || 'MySQLi'}}
 
     - name: Upload datasets
-      if: ${{ inputs.dataset_branch != '' &&  github.event_name  == 'push'}}
+      if: ${{ inputs.dataset_branch != '' &&  github.event_name  == 'push' && matrix.SAVE_BUILD}}
       run: |
         cd ~/${{inputs.application || github.event.repository.name }}
         ${{ github.workspace }}/pkp-github-actions/.github/actions/upload-to-datasets-repository.sh
@@ -215,13 +212,12 @@ runs:
       env:
         APPLICATION: ${{inputs.application || github.event.repository.name}}
         TEST: ${{matrix.database}}
-        SAVE_BUILD: true
         DATASET_BRANCH: ${{inputs.dataset_branch}}
         DATASETS_ACCESS_KEY: ${{inputs.DATASETS_ACCESS_KEY}}
 
     - name: Run  pkp-lib integration tests
       id: pkp-lib-and-plugin-integration-tests
-      if: ${{ inputs.test == 'true'}}
+      if: ${{ matrix.test == 'true'}}
       run: |
         start_time=$(date -u +%s)
         echo "status=:red_circle:" >> $GITHUB_OUTPUT
@@ -239,7 +235,7 @@ runs:
 
     - name: Run unit tests
       id: unit-test
-      if: ${{ inputs.test == 'true' }}
+      if: ${{ matrix.test == 'true' }}
       run: |
         start_time=$(date -u +%s)
         echo "status=:red_circle:" >> $GITHUB_OUTPUT
@@ -260,7 +256,7 @@ runs:
         NODE_VERSION: ${{inputs.node_version}}
 
     - name: Download datasets
-      if: ${{  github.event_name  == 'pull_request' &&  inputs.upgrade == 'true'}}
+      if: ${{  github.event_name  == 'pull_request' &&  matrix.upgrade== 'true'}}
       run: |
         cd ~/${{inputs.application || github.event.repository.name }} 
         git clone https://github.com/pkp/datasets --depth 1
@@ -272,11 +268,11 @@ runs:
 
     - name: Run upgrade tests
       id: upgrade
-      if: ${{  github.event_name  == 'push'  &&  inputs.upgrade == 'true' && inputs.upgrade_test != '' && (matrix.database == 'pgsql' || matrix.database == 'mysql' ) && (matrix.php-version == '8.1')}}
+      if: ${{  github.event_name  == 'push'  &&  matrix.upgrade== 'true' && matrix.upgrade_test != '' && (matrix.database == 'pgsql' || matrix.database == 'mysql' ) && (matrix.php-version == '8.1')}}
       run: |
         start_time=$(date -u +%s)
         cd ~/${{inputs.application || github.event.repository.name }}
-        IFS=',' read -ra DATASET_BRANCHES <<< "${{inputs.upgrade_test}}"
+        IFS=',' read -ra DATASET_BRANCHES <<< "${{matrix.upgrade_test}}"
         for DATASET_BRANCH in "${DATASET_BRANCHES[@]}"
         do
           source  ${{ github.workspace }}/pkp-github-actions/.github/actions/prepare-tests.sh
