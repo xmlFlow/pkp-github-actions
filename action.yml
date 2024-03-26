@@ -139,7 +139,6 @@ runs:
          ${{ github.workspace }}/pkp-github-actions/.github/actions/install-validation-tools.sh
       shell: bash
 
-
     - name: Run XML validation
       if: ${{ matrix.validate == 'true'}}
       id: validation
