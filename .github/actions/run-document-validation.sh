@@ -10,7 +10,7 @@ for filename in `find . -name \*.tpl -exec sed -n -e "s/.*{help[^}]file=\"\([^\"
   fi
 done
 if [ $ERRORS -ne 0 ]; then
-  exit -1
+  exit 1
 fi
 # Generate a quick report of the differences between the files listed in templates and the available files.
 find . -name \*.tpl -exec sed -n -e "s/.*{help[^}]file=\"\([^\"]\+\)\".*/\1/p" "{}" ";" | sort | uniq > /tmp/template-help-references.txt
