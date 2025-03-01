@@ -209,9 +209,13 @@ runs:
         start_time=$(date -u +%s)
         echo "status=:red_circle:" >> $GITHUB_OUTPUT
         cd ~/${{matrix.application ||  inputs.application || github.event.repository.name }}
-        ${{ github.workspace }}/pkp-github-actions/.github/actions/validate-xml.sh 
+        echo "Validate XML"
+        ${{ github.workspace }}/pkp-github-actions/.github/actions/validate-xml.sh
+        echo "Validate JSON"
         ${{ github.workspace }}/pkp-github-actions/.github/actions/validate-json.sh
+        echo "Run Lint"
         npm run lint
+        echo "Run  Doucmentation validation"
         ${{ github.workspace }}/pkp-github-actions/.github/actions/run-document-validation.sh
         duration=$(date -d@$(($(date -u +%s) - $start_time)) -u +%H:%M:%S) 
         echo "duration=$duration" >> $GITHUB_OUTPUT
