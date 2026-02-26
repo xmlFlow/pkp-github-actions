@@ -1,0 +1,16 @@
+{
+  "name": "pkp-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for PKP application management",
+  "main": "pkp-server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node pkp-server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "bin": {
+    "pkp-mcp": "./pkp-server.js"
+  }
+}
